@@ -1,0 +1,19 @@
+{
+  "name": "brightness",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mhmodjoney/Brightness.git"
+  },
+  "author": "mahmoud_jouny",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mhmodjoney/Brightness/issues"
+  },
+  "homepage": "https://github.com/mhmodjoney/Brightness#readme"
+}
