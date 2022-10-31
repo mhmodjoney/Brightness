@@ -15,5 +15,19 @@
   "bugs": {
     "url": "https://github.com/mhmodjoney/Brightness/issues"
   },
-  "homepage": "https://github.com/mhmodjoney/Brightness#readme"
+  "homepage": "https://github.com/mhmodjoney/Brightness#readme",
+  "dependencies": {
+    "crypto-js": "^4.1.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.5",
+    "mssql": "^9.0.1",
+    "nodemon": "^2.0.12"
+  },
+  "devDependencies": {
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.7.1"
+  }
 }
