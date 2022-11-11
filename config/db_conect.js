@@ -1,5 +1,5 @@
 const sql = require("mssql");
-var config = {
+const config = {
   server: "DESKTOP-MVB8N7J", //update me
   authentication: {
     type: "default",
@@ -16,21 +16,23 @@ var config = {
   },
 };
 const config_online = {
-  server: "sql8001.site4now.net", //update me
+  server: process.env.server, //update me
   authentication: {
     type: "default",
     options: {
       // trustedConnection: true,
-      userName: "db_a8e42a_brightness_admin", //update me
-      password: "b12345678", //update me
+      userName: process.env.userName, //update me
+      password: process.env.password, //update me
     },
   },
   options: {
     // If you are on Microsoft Azure, you need encryption:
     encrypt: false,
-    database: "db_a8e42a_brightness", //update me
+    database: process.env.database, //update me
   },
 };
+
+config = config_online;
 
 var dict = {
   number: sql.Int,
@@ -39,7 +41,7 @@ var dict = {
 };
 
 const sql_sp = async function (res, req, next, sp_name) {
-  const conn = await new sql.connect(config_online);
+  const conn = await new sql.connect(config);
 
   console.log(typeof process.env.admin);
   var request = new sql.Request(conn);
@@ -63,7 +65,7 @@ const sql_sp = async function (res, req, next, sp_name) {
 async function sql_query(dict2, query) {
   try {
     var err1 = null;
-    var conn = await new sql.connect(config_online);
+    var conn = await new sql.connect(config);
     var request = new sql.Request(conn);
     const resp = await request.query(query);
     return resp;
@@ -84,18 +86,20 @@ var update_query = async function (obj, id, table) {
     //remove last ,
     sql_obj = sql_obj.substring(0, sql_obj.length - 1);
 
-    //   var query = ` UPDATE ${table} SET ${sql_obj} WHERE id =${id} `;//and state!='deleted'
+    var query = ` UPDATE ${table} SET ${sql_obj} WHERE id =${id} `; //and state!='deleted'
 
-    var query = `   
-  declare @dd varchar(20)
-  select @dd=state from ${table} where id =${id}
-  if @dd!='deleted' 
-    begin
-    UPDATE ${table} SET ${sql_obj} WHERE id =${id} 
-    end
-	      `; //and state!='deleted'
+    //   var query = `
+    // declare @dd varchar(20)
+    // select @dd=state from ${table} where id =${id}
+    // if @dd!='deleted'
+    //   begin
+    //   UPDATE ${table} SET ${sql_obj} WHERE id =${id}
+    //   end
+    //       `; //and state!='deleted'
 
-    var conn = await new sql.connect(config_online);
+    //console.log(query);
+
+    var conn = await new sql.connect(config);
     var request = new sql.Request(conn);
     const resp = await request.query(query, [obj, obj.id]);
 
@@ -108,7 +112,7 @@ var update_query = async function (obj, id, table) {
 var sql_sp_dict = async function (dict2, sp_name) {
   try {
     var err1 = null;
-    var conn = await new sql.connect(config_online);
+    var conn = await new sql.connect(config);
     var request = new sql.Request(conn);
 
     for (const [key, value] of Object.entries(dict2)) {
@@ -125,7 +129,7 @@ var sql_sp_dict = async function (dict2, sp_name) {
 
 var sql_sp_dict_null = async function (dict2, sp_name) {
   try {
-    var conn = await new sql.connect(config_online);
+    var conn = await new sql.connect(config);
     var request = new sql.Request(conn);
 
     for (const [key, value] of Object.entries(dict2)) {
@@ -142,7 +146,7 @@ var sql_sp_dict_null = async function (dict2, sp_name) {
 
 const sql_sp2 = async function (req, sp_name) {
   try {
-    const conn = await new sql.connect(config_online);
+    const conn = await new sql.connect(config);
 
     // console.log(typeof(process.env.admin))
     var request = new sql.Request(conn);
@@ -150,10 +154,11 @@ const sql_sp2 = async function (req, sp_name) {
     for (const [key, value] of Object.entries(req.body)) {
       request.input(key, dict[typeof value], value);
     }
-
+    console.log("err");
     const resp = await request.execute(sp_name);
     return resp;
   } catch (err) {
+    console.log(err);
     return err;
   }
 };
